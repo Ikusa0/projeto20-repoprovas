@@ -77,6 +77,17 @@ describe("POST /tests/register", () => {
 
     expect(status).toEqual(422);
   });
+
+  it("returns 401 for invalid token", async () => {
+    const body = generateNewTest();
+    const result = await supertest(app)
+      .post("/tests/register")
+      .send({ name: body.name })
+      .set({ Authorization: `invalid-token` });
+    const { status } = result;
+
+    expect(status).toEqual(401);
+  });
 });
 
 describe("GET /tests/disciplines", () => {
@@ -93,6 +104,15 @@ describe("GET /tests/disciplines", () => {
     expect(status).toEqual(200);
     expect(result.body).toBeInstanceOf(Object);
   });
+
+  it("returns 401 for invalid token", async () => {
+    const result = await supertest(app)
+      .post("/tests/register")
+      .set({ Authorization: `invalid-token` });
+    const { status } = result;
+
+    expect(status).toEqual(401);
+  });
 });
 
 describe("GET /tests/teachers", () => {
@@ -108,5 +128,14 @@ describe("GET /tests/teachers", () => {
 
     expect(status).toEqual(200);
     expect(result.body).toBeInstanceOf(Object);
+  });
+
+  it("returns 401 for invalid token", async () => {
+    const result = await supertest(app)
+      .post("/tests/register")
+      .set({ Authorization: `invalid-token` });
+    const { status } = result;
+
+    expect(status).toEqual(401);
   });
 });
