@@ -5,8 +5,9 @@ import * as testService from "../services/testService/testService";
 export async function registerTest(req: Request, res: Response) {
   const test: Test = req.body;
 
-  await testService.registerTest(test);
-  res.sendStatus(201);
+  const id = await testService.registerTest(test);
+
+  res.status(201).send({ id });
 }
 
 export async function getTestsByDisciplines(req: Request, res: Response) {

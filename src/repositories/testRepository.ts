@@ -5,7 +5,13 @@ import db from "../databases/prisma";
 export type Test = Omit<Tests, "id">;
 
 export async function registerTest(test: Test) {
-  await db.tests.create({ data: test });
+  const created = await db.tests.create({ data: test });
+  return created.id;
+}
+
+export async function findById(id: number) {
+  const test = await db.tests.findUnique({ where: { id } });
+  return test;
 }
 
 export async function getTestsByDisciplines() {
@@ -23,7 +29,9 @@ export async function getTestsByDisciplines() {
                   name: true,
                   Tests: {
                     select: {
+                      id: true,
                       name: true,
+                      pdfUrl: true,
                       teacherDiscipline: {
                         select: { teacher: { select: { name: true } } },
                       },
@@ -66,8 +74,10 @@ export async function getTestsByTeachers() {
       name: true,
       TeachersDisciplines: {
         select: {
-          Tests: { select: { name: true } },
-          discipline: { select: { name: true } },
+          Tests: { select: { id: true, name: true, pdfUrl: true } },
+          discipline: {
+            select: { name: true, term: { select: { number: true } } },
+          },
         },
       },
     },
@@ -78,6 +88,7 @@ export async function getTestsByTeachers() {
     teacher.TeachersDisciplines.forEach((t: any) => {
       t.Tests.forEach((test: any) => {
         test.discipline = t.discipline.name;
+        test.term = t.discipline.term;
       });
       teacher.tests = teacher.tests.concat(t.Tests);
     });

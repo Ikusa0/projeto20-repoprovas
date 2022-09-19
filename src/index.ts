@@ -13,6 +13,4 @@ app.use(cors(), json());
 app.use(serverRouter);
 app.use(errorHandler);
 
-app.listen(process.env.PORT, () => {
-  console.log(`Server is listening on port ${process.env.PORT}`);
-});
+export default app;

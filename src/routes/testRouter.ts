@@ -7,12 +7,13 @@ const testRouter = Router();
 
 testRouter.post(
   "/tests/register",
+  validateToken,
   validateJoi("newTest"),
   testController.registerTest
 );
 
 testRouter.get(
-  "/tests/discipline",
+  "/tests/disciplines",
   validateToken,
   testController.getTestsByDisciplines
 );
